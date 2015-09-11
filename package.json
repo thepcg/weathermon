@@ -1,0 +1,19 @@
+{
+  "name": "weathermon",
+  "version": "0.0.1",
+  "description": "A simple node.js app that retrieves weather information from the specified source and writes the information out to a file.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thepcg/weathermon.git"
+  },
+  "author": "Dennis J Kurlinski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thepcg/weathermon/issues"
+  },
+  "homepage": "https://github.com/thepcg/weathermon"
+}
