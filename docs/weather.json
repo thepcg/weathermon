@@ -1,0 +1,66 @@
+{
+  title: 'Yahoo! Weather - Madison, OH',
+  link: 'http://us.rd.yahoo.com/dailynews/rss/weather/Madison__OH/*http://weather.yahoo.com/forecast/USOH0540_f.html',
+  description: 'Yahoo! Weather for Madison, OH',
+  language: 'en-us',
+  lastBuildDate: 'Fri, 11 Sep 2015 8:23 pm EDT',
+  ttl: '60',
+  location: {
+    city: 'Madison',
+    country: 'United States',
+    region: 'OH'
+  },
+  units: {
+    distance: 'mi',
+    pressure: 'in',
+    speed: 'mph',
+    temperature: 'F'
+  },
+  wind: {
+    chill: '62',
+    direction: '350',
+    speed: '8'
+  },
+  atmosphere: {
+    humidity: '96',
+    pressure: '29.89',
+    rising: '0',
+    visibility: '4'
+  },
+  astronomy: {
+    sunrise: '6:57 am',
+    sunset: '7:38 pm'
+  },
+  image: {
+    title: 'Yahoo! Weather',
+    width: '142',
+    height: '18',
+    link: 'http://weather.yahoo.com',
+    url: 'http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif'
+  },
+  item: {
+    title: 'Conditions for Madison, OH at 8:23 pm EDT',
+    lat: '41.78',
+    long: '-81.07',
+    link: 'http://us.rd.yahoo.com/dailynews/rss/weather/Madison__OH/*http://weather.yahoo.com/forecast/USOH0540_f.html',
+    pubDate: 'Fri, 11 Sep 2015 8:23 pm EDT',
+    condition: {
+      code: '11',
+      date: 'Fri, 11 Sep 2015 8:23 pm EDT',
+      temp: '62',
+      text: 'Light Rain'
+    },
+    description: '\n<img src="http://l.yimg.com/a/i/us/we/52/11.gif"/><br />\n<b>Current Conditions:</b><br />\nLight Rain, 62 F<BR />\n<BR /><b>Forecast:</b><BR />\nFri - Showers. High: 73 Low: 56<br />\nSat - Showers. High: 64 Low: 53<br />\nSun - AM Showers. High: 65 Low: 54<br />\nMon - Sunny. High: 72 Low: 54<br />\nTue - Sunny. High: 79 Low: 57<br />\n<br />\n<a href="http://us.rd.yahoo.com/dailynews/rss/weather/Madison__OH/*http://weather.yahoo.com/forecast/USOH0540_f.html">Full Forecast at Yahoo! Weather</a><BR/><BR/>\n(provided by <a href="http://www.weather.com" >The Weather Channel</a>)<br/>\n',
+    forecast: [
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object]
+    ],
+    guid: {
+      isPermaLink: 'false',
+      content: 'USOH0540_2015_09_15_7_00_EDT'
+    }
+  }
+}

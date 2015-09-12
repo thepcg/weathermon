@@ -1,0 +1,3 @@
+Conditions for [location.city] Ohio as of [local.weekday] [local.month] [local.date]:
+
+Temp: [item.condition.temp][units.temperature]

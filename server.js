@@ -1,35 +1,17 @@
 /*=========================================================
-weathermon - A simple node.js app that retrieves weather 
-information from the specified source and writes the 
-information out to a file.
+weathermon - server.js 
+
+Example usage
 
 Author: Dennis J Kurlinski
 =========================================================*/
 
 // Required Modules //
-var http = require("http"); //this module handles making the HTTP request
-var fs = require("fs"); // this module handles I/O to disk
+var getweather = require("./getweather");
 
 // Global Variables //
-var url = "http://forecast.weather.gov/MapClick.php?lat=41.77115728300049&lon=-81.04981875199968&FcstType=json";
+var location = "12776596";
 
-var getWeather = function(url, callback(err, data)) {
-	//Performs the HTTP request for the JSON object located at 'url'
-	//JSON object is returned in 'data'
+getweather.write(location, __dirname + "/templates/template1.txt", __dirname + "/output.txt", function(err) {
 
-};
-
-var readTemplate = function(template, callback(err, data)) {
-	//Reads the specified template
-
-};
-
-var insertWeather = function(templateVerbiage, callback(err, data)) {
-	//Puts the weather into the template
-
-};
-
-var writeScript = function(script, callback(err, data)) {
-	//Writes out the script
-
-};
+});
