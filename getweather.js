@@ -40,14 +40,27 @@ function write(woeid, template, output, callback) {
 	var addLocalVariables = function(object) {
 		var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 		var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		var rising = ["falling", "climbing"];
+		var compass = ["North"]
 		var now = new Date();
 
 		//To add custom placeholders add them here.
 		object["local"] = {
-			"weekday": days[now.getDay()],
+			"weekday": [],
 			"month": months[now.getMonth()],
-			"date": ordinal(now.getDate())
+			"date": ordinal(now.getDate()),
+			"barStatus": rising[object.atmosphere.rising],
+			"windDirection" : getCardinal(object.wind.direction)
 		};
+
+		for (i = 0; i < 7; i++) {
+			day = now.getDay() + i;
+			if (day > 6) {
+				day = day - 7;
+			}
+			object.local.weekday[i] = days[day];
+		}
+
 	};
 
 	function ordinal(i) {
@@ -64,6 +77,33 @@ function write(woeid, template, output, callback) {
 		}
 		return i + "th";
 	};
+
+	function getCardinal(angle) {
+        //easy to customize by changing the number of directions you have 
+        var directions = 8;
+        
+        var degree = 360 / directions;
+        angle = angle + degree/2;
+        
+        if (angle >= 0 * degree && angle < 1 * degree)
+            return "North";
+        if (angle >= 1 * degree && angle < 2 * degree)
+            return "North East";
+        if (angle >= 2 * degree && angle < 3 * degree)
+            return "East";
+        if (angle >= 3 * degree && angle < 4 * degree)
+            return "South East";
+        if (angle >= 4 * degree && angle < 5 * degree)
+            return "South";
+        if (angle >= 5 * degree && angle < 6 * degree)
+            return "South West";
+        if (angle >= 6 * degree && angle < 7 * degree)
+            return "West";
+        if (angle >= 7 * degree && angle < 8 * degree)
+            return "North West";
+        //Should never happen: 
+        return "North";
+    };
 
 	var getProperty = function(obj, prop) {
 		var parts = prop.split('.'),
@@ -86,6 +126,7 @@ function write(woeid, template, output, callback) {
 
 	query.exec(function(err, data) {
 		weather = data.query.results.channel;
+		fs.writeFile(__dirname + "/weather.json", JSON.stringify(weather), function(err) {});
 		addLocalVariables(weather);
 		fs.readFile(template, "utf8", function(err, text) {
 			keywords = text.match(/\[(.*?)\]/g);
