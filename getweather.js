@@ -95,7 +95,7 @@ function write(woeid, template, output, callback) {
 			}
 
 			fs.writeFile(output, text, function(err) {
-				callback(err);
+				callback(err, text);
 			});
 
 		});
