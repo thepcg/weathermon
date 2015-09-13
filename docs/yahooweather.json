@@ -1,0 +1,95 @@
+{
+  "title": "Yahoo! Weather - Madison, OH",
+  "link": "http://us.rd.yahoo.com/dailynews/rss/weather/Madison__OH/*http://weather.yahoo.com/forecast/USOH0540_f.html",
+  "description": "Yahoo! Weather for Madison, OH",
+  "language": "en-us",
+  "lastBuildDate": "Sat, 12 Sep 2015 5:26 pm EDT",
+  "ttl": "60",
+  "location": {
+    "city": "Madison",
+    "country": "United States",
+    "region": "OH"
+  },
+  "units": {
+    "distance": "mi",
+    "pressure": "in",
+    "speed": "mph",
+    "temperature": "F"
+  },
+  "wind": {
+    "chill": "57",
+    "direction": "0",
+    "speed": "5"
+  },
+  "atmosphere": {
+    "humidity": "96",
+    "pressure": "29.8",
+    "rising": "1",
+    "visibility": "3"
+  },
+  "astronomy": {
+    "sunrise": "6:57 am",
+    "sunset": "7:36 pm"
+  },
+  "image": {
+    "title": "Yahoo! Weather",
+    "width": "142",
+    "height": "18",
+    "link": "http://weather.yahoo.com",
+    "url": "http://l.yimg.com/a/i/brand/purplelogo//uh/us/news-wea.gif"
+  },
+  "item": {
+    "title": "Conditions for Madison, OH at 5:26 pm EDT",
+    "lat": "41.78",
+    "long": "-81.07",
+    "link": "http://us.rd.yahoo.com/dailynews/rss/weather/Madison__OH/*http://weather.yahoo.com/forecast/USOH0540_f.html",
+    "pubDate": "Sat, 12 Sep 2015 5:26 pm EDT",
+    "condition": {
+      "code": "12",
+      "date": "Sat, 12 Sep 2015 5:26 pm EDT",
+      "temp": "57",
+      "text": "Rain"
+    },
+    "description": "\n<img src=\"http://l.yimg.com/a/i/us/we/52/12.gif\"/><br />\n<b>Current Conditions:</b><br />\nRain, 57 F<BR />\n<BR /><b>Forecast:</b><BR />\nSat - Rain Early. High: 63 Low: 52<br />\nSun - Showers. High: 65 Low: 53<br />\nMon - Sunny. High: 74 Low: 53<br />\nTue - Sunny. High: 79 Low: 58<br />\nWed - Sunny. High: 82 Low: 60<br />\n<br />\n<a href=\"http://us.rd.yahoo.com/dailynews/rss/weather/Madison__OH/*http://weather.yahoo.com/forecast/USOH0540_f.html\">Full Forecast at Yahoo! Weather</a><BR/><BR/>\n(provided by <a href=\"http://www.weather.com\" >The Weather Channel</a>)<br/>\n",
+    "forecast": [{
+      "code": "12",
+      "date": "12 Sep 2015",
+      "day": "Sat",
+      "high": "63",
+      "low": "52",
+      "text": "Rain Early"
+    }, {
+      "code": "11",
+      "date": "13 Sep 2015",
+      "day": "Sun",
+      "high": "65",
+      "low": "53",
+      "text": "Showers"
+    }, {
+      "code": "32",
+      "date": "14 Sep 2015",
+      "day": "Mon",
+      "high": "74",
+      "low": "53",
+      "text": "Sunny"
+    }, {
+      "code": "32",
+      "date": "15 Sep 2015",
+      "day": "Tue",
+      "high": "79",
+      "low": "58",
+      "text": "Sunny"
+    }, {
+      "code": "32",
+      "date": "16 Sep 2015",
+      "day": "Wed",
+      "high": "82",
+      "low": "60",
+      "text": "Sunny"
+    }],
+    "guid": {
+      "isPermaLink": "false",
+      "content": "USOH0540_2015_09_16_7_00_EDT"
+    }
+  }
+}

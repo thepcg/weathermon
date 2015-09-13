@@ -3,7 +3,7 @@
 From the WTAF weather center here's the forecast for Cleveland and vicinity:
 
 Current weather conditions.
-[item.condition.text] with a temperature of [item.condition.temp] degrees. Humidity is at [atmosphere.humidity] percent and the barometer is currently at [atmosphere.pressure] and [local.barStatus] with the wind coming out of the [local.windDirection] at [wind.speed] miles per hour. 
+[currently.summary] with a temperature of [currently.temperature] degrees. Humidity is at [atmosphere.humidity] percent and the barometer is currently at [atmosphere.pressure] and [local.barStatus] with the wind coming out of the [local.windDirection] at [wind.speed] miles per hour. 
 
 Sunrise at [astronomy.sunrise] and sunset at [astronomy.sunset].
 

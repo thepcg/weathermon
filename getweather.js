@@ -1,19 +1,19 @@
 /*===============================================================================
-getweather.js - Retrieves weather from http://www.yahoo.com using "YQL" 
-(Yahoo Query Language) and parses the data into a supplied template, outputting 
-a text file suitable for processing through a text-to-speech engine. 
+getweather.js - Retireves the weather and parses the data into a supplied 
+template, outputting a text file suitable for processing through a text-to-speech 
+engine.
+
+getYahooWeather: Retrieves weather from http://www.yahoo.com using "YQL" 
+(Yahoo Query Language)
+
+getHTTPSWeather: Retrieves weather from any web API that supplies a JSON file via
+the HTTPS protocol. 
 
 Author: Dennis J Kurlinski
 
 Dependancies:
 ---------------------------------------------------------------------------------  
-YQL (> npm install yql)
-
-Usage:
---------------------------------------------------------------------------------- 
-var getweather = require("./getweather"); //includes module
-var location = "12776596"; //set your 'woeid'
-getweather.write(location, template location, path to output, function(err) {}); 
+YQL (>> npm install yql)
 
 Notes
 ---------------------------------------------------------------------------------
@@ -28,117 +28,196 @@ Docs\weather.json file for reference.
 ===============================================================================*/
 
 // Required Modules //
-var yql = require("yql"); // this module interfaces with YQL
-var fs = require("fs"); // this module handles I/O to disk
 
-module.exports.write = write;
+module.exports.getYahooWeather = getYahooWeather;
+module.exports.getHTTPSWeather = getHTTPSWeather;
 
-function write(woeid, template, output, callback) {
-
-	// Functions
-
-	var addLocalVariables = function(object) {
-		var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-		var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-		var rising = ["falling", "climbing"];
-		var compass = ["North"]
-		var now = new Date();
-
-		//To add custom placeholders add them here.
-		object["local"] = {
-			"weekday": [],
-			"month": months[now.getMonth()],
-			"date": ordinal(now.getDate()),
-			"barStatus": rising[object.atmosphere.rising],
-			"windDirection" : getCardinal(object.wind.direction)
-		};
-
-		for (i = 0; i < 7; i++) {
-			day = now.getDay() + i;
-			if (day > 6) {
-				day = day - 7;
-			}
-			object.local.weekday[i] = days[day];
-		}
-
-	};
-
-	function ordinal(i) {
-		var j = i % 10,
-			k = i % 100;
-		if (j == 1 && k != 11) {
-			return i + "st";
-		}
-		if (j == 2 && k != 12) {
-			return i + "nd";
-		}
-		if (j == 3 && k != 13) {
-			return i + "rd";
-		}
-		return i + "th";
-	};
-
-	function getCardinal(angle) {
-        //easy to customize by changing the number of directions you have 
-        var directions = 8;
-        
-        var degree = 360 / directions;
-        angle = angle + degree/2;
-        
-        if (angle >= 0 * degree && angle < 1 * degree)
-            return "North";
-        if (angle >= 1 * degree && angle < 2 * degree)
-            return "North East";
-        if (angle >= 2 * degree && angle < 3 * degree)
-            return "East";
-        if (angle >= 3 * degree && angle < 4 * degree)
-            return "South East";
-        if (angle >= 4 * degree && angle < 5 * degree)
-            return "South";
-        if (angle >= 5 * degree && angle < 6 * degree)
-            return "South West";
-        if (angle >= 6 * degree && angle < 7 * degree)
-            return "West";
-        if (angle >= 7 * degree && angle < 8 * degree)
-            return "North West";
-        //Should never happen: 
-        return "North";
-    };
-
-	var getProperty = function(obj, prop) {
-		var parts = prop.split('.'),
-			last = parts.pop(),
-			l = parts.length,
-			i = 1,
-			current = parts[0];
-
-		while ((obj = obj[current]) && i < l) {
-			current = parts[i];
-			i++;
-		}
-
-		if (obj) {
-			return obj[last];
-		}
-	};
+function getYahooWeather(woeid, template, output, callback) {
+	var yql = require("yql"); // this module interfaces with YQL
 
 	var query = new yql("select * from weather.forecast where woeid = " + woeid);
-
 	query.exec(function(err, data) {
-		weather = data.query.results.channel;
-		fs.writeFile(__dirname + "/weather.json", JSON.stringify(weather), function(err) {});
-		addLocalVariables(weather);
-		fs.readFile(template, "utf8", function(err, text) {
-			keywords = text.match(/\[(.*?)\]/g);
-			for (i in keywords) {
-				keyword = keywords[i].substr(1, keywords[i].length - 2);
-				text = text.replace(keywords[i], getProperty(weather, keyword));
-			}
-
-			fs.writeFile(output, text, function(err) {
-				callback(err, text);
-			});
-
+		writeWeather(addYahooLocalVariables(data.query.results.channel), template, output, function(err, data) {
+			callback(err, data);
 		});
 	});
+
+};
+
+function getHTTPSWeather(host, url, template, output, done) {
+	var https = require("https");
+
+	var req = {
+		host: host,
+		path: url,
+		port: 443,
+		method: "GET"
+	};
+
+	res = function(response) {
+
+		var str = '';
+
+		response.on('data', function(chunk) {
+			str += chunk;
+		});
+
+		response.on('end', function() {
+
+			var i = {
+				"payload": JSON.parse(str),
+				"headers": response.headers
+			};
+
+			if (response.statusCode == "200") {
+				writeWeather(i.payload, template, output, function(err, data) {
+					done(err, data);
+				});
+				done(null, i);
+			} else {
+				console.log('HTTP Error: ' + response.statusCode);
+				done(response.statusCode, i);
+			}
+
+		});
+
+	};
+
+	https.request(req, res).end();
+};
+
+function writeWeather(weather, template, output, callback) {
+	var fs = require("fs"); // this module handles I/O to disk
+
+	//addLocalVariables(weather);
+
+	fs.writeFile(__dirname + "/weather.json", JSON.stringify(weather), function(err) {});
+
+	fs.readFile(template, "utf8", function(err, text) {
+		keywords = text.match(/\[(.*?)\]/g);
+		for (i in keywords) {
+			keyword = keywords[i].substr(1, keywords[i].length - 2);
+			text = text.replace(keywords[i], getProperty(weather, keyword));
+		}
+
+		fs.writeFile(output, text, function(err) {
+			callback(err, text);
+		});
+
+	});
+
+};
+
+var addHTTPSLocalVariables = function(object) {
+	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var rising = ["falling", "climbing"];
+	var now = new Date();
+
+	//To add custom placeholders add them here.
+	object["local"] = {
+		"weekday": [],
+		"month": months[now.getMonth()],
+		"date": ordinal(now.getDate()),
+		"barStatus": rising[object.atmosphere.rising],
+		"windDirection": getCardinal(object.wind.direction)
+	};
+
+	for (i = 0; i < 7; i++) {
+		day = now.getDay() + i;
+		if (day > 6) {
+			day = day - 7;
+		}
+		object.local.weekday[i] = days[day];
+	}
+
+	return object;
+
+};
+
+var addYahooLocalVariables = function(object) {
+	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var rising = ["falling", "climbing"];
+	var now = new Date();
+
+	//To add custom placeholders add them here.
+	object["local"] = {
+		"weekday": [],
+		"month": months[now.getMonth()],
+		"date": ordinal(now.getDate()),
+		"barStatus": rising[object.atmosphere.rising],
+		"windDirection": getCardinal(object.wind.direction)
+	};
+
+	for (i = 0; i < 7; i++) {
+		day = now.getDay() + i;
+		if (day > 6) {
+			day = day - 7;
+		}
+		object.local.weekday[i] = days[day];
+	}
+
+	return object;
+
+};
+
+
+function ordinal(i) {
+	var j = i % 10,
+		k = i % 100;
+	if (j == 1 && k != 11) {
+		return i + "st";
+	}
+	if (j == 2 && k != 12) {
+		return i + "nd";
+	}
+	if (j == 3 && k != 13) {
+		return i + "rd";
+	}
+	return i + "th";
+};
+
+function getCardinal(angle) {
+	//easy to customize by changing the number of directions you have 
+	var directions = 8;
+
+	var degree = 360 / directions;
+	angle = angle + degree / 2;
+
+	if (angle >= 0 * degree && angle < 1 * degree)
+		return "North";
+	if (angle >= 1 * degree && angle < 2 * degree)
+		return "North East";
+	if (angle >= 2 * degree && angle < 3 * degree)
+		return "East";
+	if (angle >= 3 * degree && angle < 4 * degree)
+		return "South East";
+	if (angle >= 4 * degree && angle < 5 * degree)
+		return "South";
+	if (angle >= 5 * degree && angle < 6 * degree)
+		return "South West";
+	if (angle >= 6 * degree && angle < 7 * degree)
+		return "West";
+	if (angle >= 7 * degree && angle < 8 * degree)
+		return "North West";
+	//Should never happen: 
+	return "North";
+};
+
+var getProperty = function(obj, prop) {
+	var parts = prop.split('.'),
+		last = parts.pop(),
+		l = parts.length,
+		i = 1,
+		current = parts[0];
+
+	while ((obj = obj[current]) && i < l) {
+		current = parts[i];
+		i++;
+	}
+
+	if (obj) {
+		return obj[last];
+	}
 };
