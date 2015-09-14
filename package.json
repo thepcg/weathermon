@@ -1,6 +1,6 @@
 {
   "name": "weathermon",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "A simple node.js app that retrieves weather information from the specified source and writes the information out to a file.",
   "main": "server.js",
   "scripts": {
