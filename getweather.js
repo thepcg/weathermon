@@ -70,7 +70,7 @@ function getHTTPSWeather(host, url, template, output, done) {
 			};
 
 			if (response.statusCode == "200") {
-				writeWeather(i.payload, template, output, function(err, data) {
+				writeWeather(addHTTPSLocalVariables(i.payload), template, output, function(err, data) {
 					done(err, data);
 				});
 				done(null, i);
@@ -89,18 +89,18 @@ function getHTTPSWeather(host, url, template, output, done) {
 function writeWeather(weather, template, output, callback) {
 	var fs = require("fs"); // this module handles I/O to disk
 
-	//addLocalVariables(weather);
-
 	fs.writeFile(__dirname + "/weather.json", JSON.stringify(weather), function(err) {});
 
 	fs.readFile(template, "utf8", function(err, text) {
-		keywords = text.match(/\[(.*?)\]/g);
+		var keywords = text.match(/\[(.*?)\]/g);
+		console.log(keywords);
 		for (i in keywords) {
-			keyword = keywords[i].substr(1, keywords[i].length - 2);
-			text = text.replace(keywords[i], getProperty(weather, keyword));
+			var keyword = keywords[i].toString().substr(1, keywords[i].length - 2);
+			var text = text.replace(keywords[i], getProperty(weather, keyword));
 		}
 
 		fs.writeFile(output, text, function(err) {
+			fs.writeFile(__dirname + "/weather1.json", JSON.stringify(weather), function(err) {});
 			callback(err, text);
 		});
 
@@ -113,14 +113,13 @@ var addHTTPSLocalVariables = function(object) {
 	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	var rising = ["falling", "climbing"];
 	var now = new Date();
+	var roundDownWhole = ["temperature", "temperatureMin", "temperatureMax", "apparentTemperature"];
 
 	//To add custom placeholders add them here.
 	object["local"] = {
 		"weekday": [],
 		"month": months[now.getMonth()],
 		"date": ordinal(now.getDate()),
-		"barStatus": rising[object.atmosphere.rising],
-		"windDirection": getCardinal(object.wind.direction)
 	};
 
 	for (i = 0; i < 7; i++) {
@@ -131,6 +130,21 @@ var addHTTPSLocalVariables = function(object) {
 		object.local.weekday[i] = days[day];
 	}
 
+	function iterate (object) {
+		for (var property in object) {
+			if (object.hasOwnProperty(property)) {
+				if (typeof object[property] == "object") {
+					iterate(object[property]);
+				} else {
+					if (roundDownWhole.contains(object.property)) {
+						object.property = Math.round(object.property)
+					}
+				}
+			}
+		}
+	};
+
+
 	return object;
 
 };
@@ -140,12 +154,24 @@ var addYahooLocalVariables = function(object) {
 	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	var rising = ["falling", "climbing"];
 	var now = new Date();
+	var hours = now.getHours();
+	if (hours > 11){
+		hours = hours - 12;
+		ampm = "PM"
+	} else {
+		ampm = "AM"
+	}
+	var minutes = now.getMinutes();
+	var seconds = now.getSeconds();
+	var time = hours + ":" + minutes + " " + ampm;
 
-	//To add custom placeholders add them here.
+	//Add custom data to the Yahoo local object here:
 	object["local"] = {
+		"time": time,
 		"weekday": [],
 		"month": months[now.getMonth()],
 		"date": ordinal(now.getDate()),
+		"year": now.getYear(),
 		"barStatus": rising[object.atmosphere.rising],
 		"windDirection": getCardinal(object.wind.direction)
 	};
@@ -221,3 +247,13 @@ var getProperty = function(obj, prop) {
 		return obj[last];
 	}
 };
+
+Array.prototype.contains = function(obj) {
+	var i = this.length;
+	while (i--) {
+		if (this[i] === obj) {
+			return true;
+		}
+	}
+	return false;
+}
