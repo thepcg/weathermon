@@ -115,19 +115,7 @@ var addHTTPSLocalVariables = function(object) {
 	var roundDownWhole = ["temperature", "temperatureMin", "temperatureMax", "apparentTemperature"];
 
 	//To add custom placeholders add them here.
-	object["local"] = {
-		"weekday": [],
-		"month": months[now.getMonth()],
-		"date": ordinal(now.getDate()),
-	};
-
-	for (i = 0; i < 7; i++) {
-		day = now.getDay() + i;
-		if (day > 6) {
-			day = day - 7;
-		}
-		object.local.weekday[i] = days[day];
-	}
+	object["local"] = addLocalVariable();
 
 	function iterate(object) {
 		for (var property in object) {
@@ -174,7 +162,7 @@ var addLocalVariable = function() {
 	}
 	var minutes = now.getMinutes();
 	var seconds = now.getSeconds();
-	var time = hours + ":" + minutes + " " + ampm;
+	var time = hours + ". " + phoeneticalTime(minutes) + " " + ampm;
 	object = {
 		"time": time,
 		"weekday": [],
@@ -193,6 +181,16 @@ var addLocalVariable = function() {
 
 	return object;
 };
+
+function phoeneticalMinutes (num){
+	if (num.toString().charAt(0) == "0" && num.charAt(1) == "0"){
+		return ""; //returns no minutes if the minutes are zero
+	} else if (num.toString().charAt(0) == "0") {
+		return "Oh " + num;
+	}
+
+	return num;
+}
 
 function ordinal(i) {
 	var j = i % 10,
