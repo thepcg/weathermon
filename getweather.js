@@ -93,7 +93,6 @@ function writeWeather(weather, template, output, callback) {
 
 	fs.readFile(template, "utf8", function(err, text) {
 		var keywords = text.match(/\[(.*?)\]/g);
-		console.log(keywords);
 		for (i in keywords) {
 			var keyword = keywords[i].toString().substr(1, keywords[i].length - 2);
 			var text = text.replace(keywords[i], getProperty(weather, keyword));
@@ -130,7 +129,7 @@ var addHTTPSLocalVariables = function(object) {
 		object.local.weekday[i] = days[day];
 	}
 
-	function iterate (object) {
+	function iterate(object) {
 		for (var property in object) {
 			if (object.hasOwnProperty(property)) {
 				if (typeof object[property] == "object") {
@@ -150,12 +149,24 @@ var addHTTPSLocalVariables = function(object) {
 };
 
 var addYahooLocalVariables = function(object) {
+
+	object["local"] = addLocalVariable();
+
+	//Add custom data to the Yahoo local object here:
+	var rising = ["falling", "climbing"];
+	object.local.barStatus = rising[object.atmosphere.rising]
+	object.local.windDirection = getCardinal(object.wind.direction)
+
+	return object;
+
+};
+
+var addLocalVariable = function() {
 	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var rising = ["falling", "climbing"];
 	var now = new Date();
 	var hours = now.getHours();
-	if (hours > 11){
+	if (hours > 12) {
 		hours = hours - 12;
 		ampm = "PM"
 	} else {
@@ -164,16 +175,12 @@ var addYahooLocalVariables = function(object) {
 	var minutes = now.getMinutes();
 	var seconds = now.getSeconds();
 	var time = hours + ":" + minutes + " " + ampm;
-
-	//Add custom data to the Yahoo local object here:
-	object["local"] = {
+	object = {
 		"time": time,
 		"weekday": [],
 		"month": months[now.getMonth()],
 		"date": ordinal(now.getDate()),
-		"year": now.getYear(),
-		"barStatus": rising[object.atmosphere.rising],
-		"windDirection": getCardinal(object.wind.direction)
+		"year": now.getFullYear()
 	};
 
 	for (i = 0; i < 7; i++) {
@@ -181,13 +188,11 @@ var addYahooLocalVariables = function(object) {
 		if (day > 6) {
 			day = day - 7;
 		}
-		object.local.weekday[i] = days[day];
+		object.weekday[i] = days[day];
 	}
 
 	return object;
-
 };
-
 
 function ordinal(i) {
 	var j = i % 10,
