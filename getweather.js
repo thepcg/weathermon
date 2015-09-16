@@ -42,7 +42,7 @@ function getYahooWeather(woeid, template, output, callback) {
 		});
 	});
 
-};
+}
 
 function getHTTPSWeather(host, url, template, output, done) {
 	var https = require("https");
@@ -54,15 +54,15 @@ function getHTTPSWeather(host, url, template, output, done) {
 		method: "GET"
 	};
 
-	res = function(response) {
+	var res = function(response) {
 
-		var str = '';
+		var str = "";
 
-		response.on('data', function(chunk) {
+		response.on("data", function(chunk) {
 			str += chunk;
 		});
 
-		response.on('end', function() {
+		response.on("end", function() {
 
 			var i = {
 				"payload": JSON.parse(str),
@@ -70,12 +70,13 @@ function getHTTPSWeather(host, url, template, output, done) {
 			};
 
 			if (response.statusCode == "200") {
-				writeWeather(addHTTPSLocalVariables(i.payload), template, output, function(err, data) {
-					done(err, data);
+				addHTTPSLocalVariables(i.payload, function(err, object) {
+					writeWeather(object, template, output, function(err, object) {
+						done(err, object);
+					});
 				});
-				done(null, i);
 			} else {
-				console.log('HTTP Error: ' + response.statusCode);
+				console.log("*******HTTP Error: " + response.statusCode);
 				done(response.statusCode, i);
 			}
 
@@ -89,47 +90,61 @@ function getHTTPSWeather(host, url, template, output, done) {
 function writeWeather(weather, template, output, callback) {
 	var fs = require("fs"); // this module handles I/O to disk
 
-	fs.writeFile(__dirname + "/weather.json", JSON.stringify(weather), function(err) {});
+	fs.writeFile(__dirname + "/weather_write.json", JSON.stringify(weather), function() {});
 
 	fs.readFile(template, "utf8", function(err, text) {
 		var keywords = text.match(/\[(.*?)\]/g);
-		for (i in keywords) {
+		for (var i in keywords) {
 			var keyword = keywords[i].toString().substr(1, keywords[i].length - 2);
-			var text = text.replace(keywords[i], getProperty(weather, keyword));
+			text = text.replace(keywords[i], getProperty(weather, keyword));
 		}
 
 		fs.writeFile(output, text, function(err) {
-			fs.writeFile(__dirname + "/weather1.json", JSON.stringify(weather), function(err) {});
+			fs.writeFile(__dirname + "/weather1.json", JSON.stringify(weather), function() {});
 			callback(err, text);
 		});
 
 	});
 
-};
+}
 
-var addHTTPSLocalVariables = function(object) {
-	
-	var roundDownWhole = ["temperature", "temperatureMin", "temperatureMax", "apparentTemperature"];
+var addHTTPSLocalVariables = function(weather, callback) {
+	console.log("SERIOUSLY Starting to addHTTPSLocalVariables=========");
 
 	//To add custom placeholders add them here.
-	object["local"] = addLocalVariable();
 
-	function iterate(object) {
-		for (var property in object) {
-			if (object.hasOwnProperty(property)) {
-				if (typeof object[property] == "object") {
-					iterate(object[property]);
+	weather["local"] = addLocalVariable();
+
+	console.log("Starting the iteration process..........");
+	var roundDownWhole = ["temperature", "temperatureMin", "temperatureMax", "apparentTemperature"];
+
+	function iterate(weather) {
+		for (var property in weather) {
+			//console.log(property + " in " + weather);
+			if (weather.hasOwnProperty(property)) {
+				//console.log(property + " in " + weather + " has own Property");
+				if (typeof weather[property] == "object") {
+					//console.log(property + " in " +  + "is an object");
+					iterate(weather[property]);
 				} else {
-					if (roundDownWhole.contains(object.property)) {
-						object.property = Math.round(object.property)
+					//console.log(property + " in " + weather + "is not an object");
+					if (roundDownWhole.contains(property)) {
+						console.log("||||||||>>>rounding " + property + ": " + weather.property);
+						console.log(weather);
+						console.log(weather.property);
+						weather.property = Math.round(weather.property);
+						console.log(weather.property);
 					}
 				}
 			}
 		}
-	};
-
-
-	return object;
+	}
+	iterate(weather);
+	callback(null, weather);
+	//iterate(object, function(err, data) {
+	//	console.log("SERIOUSLY finishing  to addHTTPSLocalVariables=========");
+	//	callback(null, data);
+	//});
 
 };
 
@@ -139,8 +154,8 @@ var addYahooLocalVariables = function(object) {
 
 	//Add custom data to the Yahoo local object here:
 	var rising = ["falling", "climbing"];
-	object.local.barStatus = rising[object.atmosphere.rising]
-	object.local.windDirection = getCardinal(object.wind.direction)
+	object.local.barStatus = rising[object.atmosphere.rising];
+	object.local.windDirection = getCardinal(object.wind.direction);
 
 	return object;
 
@@ -151,16 +166,17 @@ var addLocalVariable = function() {
 	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	var now = new Date();
 	var hours = now.getHours();
+	var ampm = "";
 	if (hours > 12) {
 		hours = hours - 12;
-		ampm = "PM"
+		ampm = "PM";
 	} else {
-		ampm = "AM"
+		ampm = "AM";
 	}
 	var minutes = now.getMinutes();
 	var seconds = now.getSeconds();
 	var time = hours + ". " + phoeneticalMinutes(minutes) + " " + ampm;
-	object = {
+	var object = {
 		"time": time,
 		"weekday": [],
 		"month": months[now.getMonth()],
@@ -168,8 +184,8 @@ var addLocalVariable = function() {
 		"year": now.getFullYear()
 	};
 
-	for (i = 0; i < 7; i++) {
-		day = now.getDay() + i;
+	for (var i = 0; i < 7; i++) {
+		var day = now.getDay() + i;
 		if (day > 6) {
 			day = day - 7;
 		}
@@ -179,8 +195,8 @@ var addLocalVariable = function() {
 	return object;
 };
 
-function phoeneticalMinutes (num){
-	if (num.toString().charAt(0) == "0" && num.charAt(1) == "0"){
+function phoeneticalMinutes(num) {
+	if (num.toString().charAt(0) == "0" && num.charAt(1) == "0") {
 		return ""; //returns no minutes if the minutes are zero
 	} else if (num.toString().charAt(0) == "0") {
 		return "Oh " + num;
@@ -202,7 +218,7 @@ function ordinal(i) {
 		return i + "rd";
 	}
 	return i + "th";
-};
+}
 
 function getCardinal(angle) {
 	//easy to customize by changing the number of directions you have 
@@ -229,10 +245,10 @@ function getCardinal(angle) {
 		return "North West";
 	//Should never happen: 
 	return "North";
-};
+}
 
 var getProperty = function(obj, prop) {
-	var parts = prop.split('.'),
+	var parts = prop.split("."),
 		last = parts.pop(),
 		l = parts.length,
 		i = 1,
@@ -256,4 +272,4 @@ Array.prototype.contains = function(obj) {
 		}
 	}
 	return false;
-}
+};
