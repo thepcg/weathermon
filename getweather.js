@@ -70,10 +70,8 @@ function getHTTPSWeather(host, url, template, output, done) {
 			};
 
 			if (response.statusCode == "200") {
-				addHTTPSLocalVariables(i.payload, function(err, object) {
-					writeWeather(object, template, output, function(err, object) {
-						done(err, object);
-					});
+				writeWeather(addHTTPSLocalVariables(i.payload), template, output, function(err, object) {
+					done(err, object);
 				});
 			} else {
 				console.log("*******HTTP Error: " + response.statusCode);
@@ -85,12 +83,10 @@ function getHTTPSWeather(host, url, template, output, done) {
 	};
 
 	https.request(req, res).end();
-};
+}
 
 function writeWeather(weather, template, output, callback) {
 	var fs = require("fs"); // this module handles I/O to disk
-
-	fs.writeFile(__dirname + "/weather_write.json", JSON.stringify(weather), function() {});
 
 	fs.readFile(template, "utf8", function(err, text) {
 		var keywords = text.match(/\[(.*?)\]/g);
@@ -100,7 +96,6 @@ function writeWeather(weather, template, output, callback) {
 		}
 
 		fs.writeFile(output, text, function(err) {
-			fs.writeFile(__dirname + "/weather1.json", JSON.stringify(weather), function() {});
 			callback(err, text);
 		});
 
@@ -108,56 +103,42 @@ function writeWeather(weather, template, output, callback) {
 
 }
 
-var addHTTPSLocalVariables = function(weather, callback) {
-	console.log("SERIOUSLY Starting to addHTTPSLocalVariables=========");
+var addHTTPSLocalVariables = function(https_weather) {
 
-	//To add custom placeholders add them here.
+	https_weather["local"] = addLocalVariable();
 
-	weather["local"] = addLocalVariable();
-
-	console.log("Starting the iteration process..........");
+	//Add custom data to the HTTPS local object here:
 	var roundDownWhole = ["temperature", "temperatureMin", "temperatureMax", "apparentTemperature"];
 
-	function iterate(weather) {
-		for (var property in weather) {
-			//console.log(property + " in " + weather);
-			if (weather.hasOwnProperty(property)) {
-				//console.log(property + " in " + weather + " has own Property");
-				if (typeof weather[property] == "object") {
-					//console.log(property + " in " +  + "is an object");
-					iterate(weather[property]);
+	function iterate(obj) {
+		for (var property in obj) {
+			if (obj.hasOwnProperty(property)) {
+				if (typeof obj[property] == "object") {
+					iterate(obj[property]);
 				} else {
-					//console.log(property + " in " + weather + "is not an object");
 					if (roundDownWhole.contains(property)) {
-						console.log("||||||||>>>rounding " + property + ": " + weather.property);
-						console.log(weather);
-						console.log(weather.property);
-						weather.property = Math.round(weather.property);
-						console.log(weather.property);
+						obj[property] = Math.round(obj[property]);
 					}
 				}
 			}
 		}
-	}
-	iterate(weather);
-	callback(null, weather);
-	//iterate(object, function(err, data) {
-	//	console.log("SERIOUSLY finishing  to addHTTPSLocalVariables=========");
-	//	callback(null, data);
-	//});
 
+		return obj;
+	}
+
+	return iterate(https_weather);
 };
 
-var addYahooLocalVariables = function(object) {
+var addYahooLocalVariables = function(yahoo_weather) {
 
-	object["local"] = addLocalVariable();
+	yahoo_weather["local"] = addLocalVariable();
 
 	//Add custom data to the Yahoo local object here:
 	var rising = ["falling", "climbing"];
-	object.local.barStatus = rising[object.atmosphere.rising];
-	object.local.windDirection = getCardinal(object.wind.direction);
+	yahoo_weather.local.barStatus = rising[yahoo_weather.atmosphere.rising];
+	yahoo_weather.local.windDirection = getCardinal(yahoo_weather.wind.direction);
 
-	return object;
+	return yahoo_weather;
 
 };
 
@@ -174,7 +155,6 @@ var addLocalVariable = function() {
 		ampm = "AM";
 	}
 	var minutes = now.getMinutes();
-	var seconds = now.getSeconds();
 	var time = hours + ". " + phoeneticalMinutes(minutes) + " " + ampm;
 	var object = {
 		"time": time,
