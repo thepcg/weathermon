@@ -108,10 +108,7 @@ function writeWeather(weather, template, output, callback) {
 };
 
 var addHTTPSLocalVariables = function(object) {
-	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var rising = ["falling", "climbing"];
-	var now = new Date();
+	
 	var roundDownWhole = ["temperature", "temperatureMin", "temperatureMax", "apparentTemperature"];
 
 	//To add custom placeholders add them here.
@@ -162,7 +159,7 @@ var addLocalVariable = function() {
 	}
 	var minutes = now.getMinutes();
 	var seconds = now.getSeconds();
-	var time = hours + ". " + phoeneticalTime(minutes) + " " + ampm;
+	var time = hours + ". " + phoeneticalMinutes(minutes) + " " + ampm;
 	object = {
 		"time": time,
 		"weekday": [],
