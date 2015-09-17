@@ -1,0 +1,21 @@
+{
+	"system": {},
+	"requests": [{
+		"name": "First Request Profile",
+		"type": "yahoo",
+		"location": "12776596",
+		"template": "C:\\users\\denni\\github\\weathermon\\templates\\template1.txt",
+		"output": "C:\\users\\denni\\github\\weathermon\\output.txt"
+	}],
+	"schedules": [{
+		"name": "First Schedule",
+		"days": [0, 1, 2, 3, 4, 5, 6],
+		"clock": "23:47",
+		"request": 0
+	},{
+		"name": "Second Schedule",
+		"days": [0, 1, 2, 3, 4, 5, 6],
+		"clock": "23:48",
+		"request": 0
+		}]
+}

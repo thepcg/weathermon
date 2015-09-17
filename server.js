@@ -7,14 +7,76 @@ Author: Dennis J Kurlinski
 =========================================================*/
 
 // Required Modules //
+var fs = require("fs");
+var schedule = require('node-schedule');
 var getweather = require("./getweather");
 
-// Global Variables //
-var location = "12776596";//woeid for Madison, OH
-var outputPath = "C:\\Users\\Username\\Some Folder\\"
+toScreen("Starting...");
+fs.readFile(__dirname + "\\config.json", "utf8", function(err, text) {
+	if (err === null) {
+		toScreen("Loading config...")
+		config = JSON.parse(text);
+		if (typeof config == "object" && config !== null) {
+			for (var x in config.schedules) {
+				if (config.schedules.hasOwnProperty(x)) {
+					sched = config.schedules[x];
 
-getweather.getYahooWeather(location, __dirname + "/templates/conditions1.txt", outputPath + "output_conditions.txt", function(err, data) {});
+					var rule = new schedule.RecurrenceRule();
+					rule.dayOfWeek = sched.days;
+					clock = sched["clock"].split(":");
+					rule.hour = parseInt(clock[0]);
+					rule.minute = parseInt(clock[1]);
 
-getweather.getYahooWeather(location, __dirname + "/templates/today1.txt", outputPath + "output_today.txt", function(err, data) {});
+					var newSchedule = schedule.scheduleJob(rule, function() {
+						request = config.requests[sched.request]
+						if (request["type"] == "yahoo") {
+							
+							getweather.getYahooWeather(request["location"], request["template"], request["output"], function(err, data) {
+								if (err === null){
+									toScreen("Executed request profile: " + request["name"] + " using schedule: " + sched["name"]);
+								}
+							});
+						}
 
-getweather.getYahooWeather(location, __dirname + "/templates/tonight1.txt", outputPath + "output_tonight.txt", function(err, data) {});
+					});
+				}
+			}
+
+			toScreen("Running...");
+		} else {
+			console.log("Error: configuration file does not contain a valid object.");
+		}
+	} else {
+		console.log("Error: " + err + " when reading configuration.");
+	}
+});
+
+function toScreen(str) {
+// Create a date object with the current time
+  var now = new Date();
+
+// Create an array with the current month, day and time
+  var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+
+// Create an array with the current hour, minute and second
+  var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
+
+// Determine AM or PM suffix based on the hour
+  var suffix = ( time[0] < 12 ) ? "AM" : "PM";
+
+// Convert hour from military time
+  time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
+
+// If hour is 0, set it to 12
+  time[0] = time[0] || 12;
+
+// If seconds and minutes are less than 10, add a zero
+  for ( var i = 1; i < 3; i++ ) {
+    if ( time[i] < 10 ) {
+      time[i] = "0" + time[i];
+    }
+  }
+
+// Return the formatted string
+  console.log("[WeatherMon] "+ date.join("/") + " " + time.join(":") + " " + suffix + " " + str);
+}

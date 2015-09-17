@@ -87,6 +87,7 @@ function getHTTPSWeather(host, url, template, output, done) {
 
 function writeWeather(weather, template, output, callback) {
 	var fs = require("fs"); // this module handles I/O to disk
+	fs.writeFile("C:\\users\\denni\\github\\weathermon\\forecast.io.json", JSON.stringify(weather), function(){});
 
 	fs.readFile(template, "utf8", function(err, text) {
 		var keywords = text.match(/\[(.*?)\]/g);

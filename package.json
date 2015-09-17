@@ -21,7 +21,8 @@
     "doc": "docs"
   },
   "dependencies": {
-    "yql": "^1.0.2"
+    "yql": "^1.0.2",
+    "node-schedule": "^0.2.9"
   },
   "devDependencies": {}
 }
