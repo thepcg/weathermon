@@ -148,12 +148,15 @@ var addLocalVariable = function() {
 	var now = new Date();
 	var hours = now.getHours();
 	var ampm = "";
-	if (hours > 12) {
-		hours = hours - 12;
+
+	if (hours > 11) {
 		ampm = "PM";
+		if (hours > 12){ hours = hours - 12}
 	} else {
+		if (hours = 0){hours = 12}
 		ampm = "AM";
 	}
+	
 	var minutes = now.getMinutes();
 	var time = hours + ". " + phoeneticalMinutes(minutes) + " " + ampm;
 	var object = {
