@@ -156,9 +156,9 @@ var addLocalVariable = function() {
 		if (hours = 0){hours = 12}
 		ampm = "AM";
 	}
-	
+
 	var minutes = now.getMinutes();
-	var time = hours + ". " + phoeneticalMinutes(minutes) + " " + ampm;
+	var time = hours + " " + phoeneticalMinutes(minutes) + " " + ampm;
 	var object = {
 		"time": time,
 		"weekday": [],
