@@ -154,7 +154,7 @@ var addLocalVariable = function() {
 		ampm = "PM";
 		if (hours > 12){ hours = hours - 12}
 	} else {
-		if (hours = 0){hours = 12}
+		if (hours == 0){hours = 12}
 		ampm = "AM";
 	}
 
