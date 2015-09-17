@@ -176,10 +176,13 @@ var addLocalVariable = function() {
 };
 
 function phoeneticalMinutes(num) {
-	if (num.toString().charAt(0) == "0" && num.charAt(1) == "0") {
-		return ""; //returns no minutes if the minutes are zero
-	} else if (num.toString().charAt(0) == "0") {
-		return "Oh " + num;
+
+	if (num.toString().length == 1) {
+		if (num == "0") {
+			return "";
+		} else {
+			return "Oh " + num;
+		}
 	}
 
 	return num;
