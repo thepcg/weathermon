@@ -11,7 +11,7 @@ the HTTPS protocol.
 
 Author: Dennis J Kurlinski
 
-Dependancies:
+Dependancies: :)
 ---------------------------------------------------------------------------------  
 YQL (>> npm install yql)
 
