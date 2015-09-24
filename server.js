@@ -15,7 +15,7 @@ var schedule = require('node-schedule');
 var getweather = require("./getweather");
 
 toScreen("Starting...");
-fs.readFile(__dirname + "\\config\\config.json", "utf8", function(err, text) {
+fs.readFile(__dirname + "/config/config.json", "utf8", function(err, text) {
 	if (err === null) {
 		toScreen("Loading config...")
 		config = JSON.parse(text);
@@ -66,8 +66,8 @@ app.post('/config.json', function(request, response) {
 	fs.writeFile(__dirname + "\\config\\config.json", JSON.stringify(request.body), function(err){console.log(err)});
 });
 
-app.listen(process.env.PORT || 8080);
-console.log("Configuration page listening on http://127.0.0.1:8080");
+app.listen(process.env.PORT || 8081);
+console.log("Configuration page listening on http://127.0.0.1:8081");
 
 function toScreen(str) {
 	// Create a date object with the current time
