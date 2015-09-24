@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		
+		<title>WeatherMon Configuration Page</title>
+		
+		<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="style.css">
+		
+		<script src="./javascript/weathermonAJAX.js"></script>
+		
+	</head>
+	
+	<body>
+		<div id="main">
+			<div id="heading">
+				<h1>WeatherMon Configuration Page</h1> 
+				<button type="button" onclick="loadXMLDoc()">Load Configuration</button>
+			</div>
+
+			<div id="reuests_container" style="text-align: left;">
+				<h2>Requests</h2>
+				<div id="request_table">
+					
+				</div>
+			</div>
+
+			<div id="schedules_container" style="text-align: left;">
+				<h2>Schedules</h2>
+				<div id="schedule_table"></div>
+
+			</div>
+
+			<div id="footer">
+				<a href="https://github.com/thepcg/weathermon"> Find out more about WeatherMon </a>
+			</div>
+		</div>
+	</body>
+
+</html>		

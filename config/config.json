@@ -1,7 +1,13 @@
 {
 	"system": {},
 	"requests": [{
-		"name": "First Request Profilerq",
+		"name": "r",
+		"type": "yahoo",
+		"location": "12776596",
+		"template": "C:\\users\\denni\\github\\weathermon\\templates\\template1.txt",
+		"output": "C:\\users\\denni\\github\\weathermon\\output.txt"
+	},{
+		"name": "r",
 		"type": "yahoo",
 		"location": "12776596",
 		"template": "C:\\users\\denni\\github\\weathermon\\templates\\template1.txt",

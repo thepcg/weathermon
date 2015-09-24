@@ -230,7 +230,6 @@ function getCardinal(angle) {
 		return "West";
 	if (angle >= 7 * degree && angle < 8 * degree)
 		return "North West";
-	//Should never happen: 
 	return "North";
 }
 
