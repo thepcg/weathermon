@@ -77,3 +77,24 @@ function buildScheduleTable(obj) {
 	return html;
 	
 }
+
+function addNewRequest(){
+	config.requests.push({
+		"name": "New Request",
+		"type": "",
+		"location": "",
+		"template": "",
+		"output": ""
+	});
+	document.getElementById("request_table").innerHTML=buildRequestTable(config.requests);
+}
+
+function addNewSchedule(){
+	config.schedules.push({
+		"name": "New Schedule",
+		"days": [0, 1, 2, 3, 4, 5, 6],
+		"clock": "23:47",
+		"request": 0
+	});
+	document.getElementById("schedule_table").innerHTML=buildRequestTable(config.schedules);
+}
