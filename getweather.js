@@ -86,8 +86,7 @@ function getHTTPSWeather(host, url, template, output, done) {
 }
 
 function writeWeather(weather, template, output, callback) {
-	var fs = require("fs"); // this module handles I/O to disk
-	fs.writeFile("C:\\users\\denni\\github\\weathermon\\forecast.io.json", JSON.stringify(weather), function(){});
+	var fs = require("fs"); 
 
 	fs.readFile(template, "utf8", function(err, text) {
 		var keywords = text.match(/\[(.*?)\]/g);
@@ -208,7 +207,7 @@ function ordinal(i) {
 }
 
 function getCardinal(angle) {
-	//easy to customize by changing the number of directions you have 
+
 	var directions = 8;
 
 	var degree = 360 / directions;

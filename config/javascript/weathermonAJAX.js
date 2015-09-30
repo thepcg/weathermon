@@ -52,7 +52,7 @@ function saveXMLDoc() {
 }
 
 function buildRequestTable(obj) {
-	var htmlTag = "<table style=&quot;width:95%&quot;>";
+	var htmlTag = "<table style=&quot;width:95%&quot; id=&quot;request_table&quot;>";
 	var htmlHeaderRow = "<tr><td>Name</td><td>Type</td><td>Location</td><td>Template</td><td>Output</td></tr>";
 	var htmlClosingTag = "</table>";
 	var html = htmlTag + htmlHeaderRow 
@@ -65,7 +65,7 @@ function buildRequestTable(obj) {
 
 function buildScheduleTable(obj) {
 
-	var htmlTag = "<table style=&quot;width:95%&quot;>";
+	var htmlTag = "<table style=&quot;width:95%&quot; id=&quot;schedule_table&quot;>";
 	var htmlHeaderRow = "<tr><td>Name</td><td>Days</td><td>Clock</td><td>Request</td></tr>";
 	var htmlClosingTag = "</table>";
 	var html = htmlTag + htmlHeaderRow 
