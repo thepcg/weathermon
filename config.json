@@ -10,7 +10,7 @@
 	"schedules": [{
 		"name": "First Schedule",
 		"days": [0, 1, 2, 3, 4, 5, 6],
-		"clock": "23:47",
+		"clock": "17:05",
 		"request": 0
 	}, {
 		"name": "Second Schedule",

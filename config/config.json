@@ -1,27 +1,27 @@
 {
 	"system": {},
 	"requests": [{
-		"name": "r",
+		"name": "First Request",
 		"type": "yahoo",
 		"location": "12776596",
-		"template": "C:\\users\\denni\\github\\weathermon\\templates\\template1.txt",
+		"template": "C:\\users\\denni\\github\\weathermon\\templates\\conditions1.txt",
 		"output": "C:\\users\\denni\\github\\weathermon\\output.txt"
 	},{
-		"name": "r",
+		"name": "Second Request",
 		"type": "yahoo",
 		"location": "12776596",
 		"template": "C:\\users\\denni\\github\\weathermon\\templates\\template1.txt",
-		"output": "C:\\users\\denni\\github\\weathermon\\output.txt"
+		"output": "C:\\users\\denni\\github\\weathermon\\output2.txt"
 	}],
 	"schedules": [{
 		"name": "First Schedule",
 		"days": [0, 1, 2, 3, 4, 5, 6],
-		"clock": "23:47",
+		"clock": "18:40",
 		"request": 0
 	}, {
 		"name": "Second Schedule",
 		"days": [0, 1, 2, 3, 4, 5, 6],
-		"clock": "23:48",
-		"request": 0
+		"clock": "18:41",
+		"request": 1
 	}]
 }
