@@ -1,31 +1,31 @@
-/*===============================================================================
+/*==============================================================================
 getweather.js - Retireves the weather and parses the data into a supplied 
-template, outputting a text file suitable for processing through a text-to-speech 
-engine.
+template, outputting a text file suitable for processing through a 
+text-to-speech engine.
 
 getYahooWeather: Retrieves weather from http://www.yahoo.com using "YQL" 
 (Yahoo Query Language)
 
-getHTTPSWeather: Retrieves weather from any web API that supplies a JSON file via
-the HTTPS protocol. 
+getHTTPSWeather: Retrieves weather from any web API that supplies a JSON file 
+via the HTTPS protocol. 
 
 Author: Dennis J Kurlinski
 
 Dependancies: :)
----------------------------------------------------------------------------------  
+--------------------------------------------------------------------------------  
 YQL (>> npm install yql)
 
 Notes
----------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 (*)woeids (or 'Where on Earth IDs') are used by the Yahoo API to target
 the forecast of a specific location. To find the woeid for your location
 reference: http://woeid.rosselliot.co.nz/
 
 (*)Templates: This module will replace text wrapped in square brackets with the 
-equivilent JSON data (i.e. [wind.speed] = the current numeric wind speed) See the
-Docs\weather.json file for reference. 
+equivilent JSON data (i.e. [wind.speed] = the current numeric wind speed) See 
+the Docs\weather.json file for reference. 
 
-===============================================================================*/
+==============================================================================*/
 
 // Required Modules //
 
@@ -37,9 +37,12 @@ function getYahooWeather(woeid, template, output, callback) {
 
 	var query = new yql("select * from weather.forecast where woeid = " + woeid);
 	query.exec(function(err, data) {
-		writeWeather(addYahooLocalVariables(data.query.results.channel), template, output, function(err, data) {
-			callback(err, data);
-		});
+		writeWeather(addYahooLocalVariables(data.query.results.channel),
+			template,
+			output,
+			function(err, data) {
+				callback(err, data);
+			});
 	});
 
 }
@@ -70,9 +73,12 @@ function getHTTPSWeather(host, url, template, output, done) {
 			};
 
 			if (response.statusCode == "200") {
-				writeWeather(addHTTPSLocalVariables(i.payload), template, output, function(err, object) {
-					done(err, object);
-				});
+				writeWeather(addHTTPSLocalVariables(i.payload),
+					template,
+					output,
+					function(err, object) {
+						done(err, object);
+					});
 			} else {
 				console.log("*******HTTP Error: " + response.statusCode);
 				done(response.statusCode, i);
@@ -86,7 +92,7 @@ function getHTTPSWeather(host, url, template, output, done) {
 }
 
 function writeWeather(weather, template, output, callback) {
-	var fs = require("fs"); 
+	var fs = require("fs");
 
 	fs.readFile(template, "utf8", function(err, text) {
 		var keywords = text.match(/\[(.*?)\]/g);
@@ -108,7 +114,12 @@ var addHTTPSLocalVariables = function(https_weather) {
 	https_weather["local"] = addLocalVariable();
 
 	//Add custom data to the HTTPS local object here:
-	var roundDownWhole = ["temperature", "temperatureMin", "temperatureMax", "apparentTemperature"];
+	var roundDownWhole = [
+		"temperature",
+		"temperatureMin",
+		"temperatureMax",
+		"apparentTemperature"
+	];
 
 	function iterate(obj) {
 		for (var property in obj) {
@@ -143,17 +154,43 @@ var addYahooLocalVariables = function(yahoo_weather) {
 };
 
 var addLocalVariable = function() {
-	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	var days = [
+		"Sunday",
+		"Monday",
+		"Tuesday",
+		"Wednesday",
+		"Thursday",
+		"Friday",
+		"Saturday"
+	];
+	var months = [
+		"January",
+		"February",
+		"March",
+		"April",
+		"May",
+		"June",
+		"July",
+		"August",
+		"September",
+		"October",
+		"November",
+		"December"
+	];
+
 	var now = new Date();
 	var hours = now.getHours();
 	var ampm = "";
 
 	if (hours > 11) {
 		ampm = "PM";
-		if (hours > 12){ hours = hours - 12}
+		if (hours > 12) {
+			hours = hours - 12;
+		}
 	} else {
-		if (hours == 0){hours = 12}
+		if (hours == 0) {
+			hours = 12;
+		}
 		ampm = "AM";
 	}
 
